@@ -1,15 +1,14 @@
 package com.example.lopputehtava_tulipaikat
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-
+import androidx.appcompat.app.AppCompatActivity
+import com.example.lopputehtava_tulipaikat.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.example.lopputehtava_tulipaikat.databinding.ActivityMapsBinding
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -39,15 +38,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        val zoom = 12.0f;
 
         // Add a marker in Sydney and move the camera
         //val sydney = LatLng(-34.0, 151.0)
         //mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
 
-        val kemiKiikeli = LatLng(65.74167678944094, 24.54041929313742)
-        mMap.addMarker(MarkerOptions().position(kemiKiikeli).title("Kiikelin laavu, Kemi"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(kemiKiikeli))
-        //65.74167678944094, 24.54041929313742
+        val kemiKiikeli = LatLng(65.74113055245003, 24.54041091060241)
+        mMap.addMarker(MarkerOptions()
+            .position(kemiKiikeli)
+            .title("Kiikelin laavu, Kemi")
+            .snippet("Kiikelin laavu Kemissä...JNEJNEJNE")
+        )
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(kemiKiikeli, zoom))
+
+        val uiSettings = googleMap.uiSettings
+        uiSettings.isZoomControlsEnabled = true
+
     }
 }
