@@ -9,6 +9,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -38,12 +39,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        val zoom = 12.0f;
-
-        // Add a marker in Sydney and move the camera
-        //val sydney = LatLng(-34.0, 151.0)
-        //mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        val zoom = 12.0f
 
         val kemiKiikeli = LatLng(65.74113055245003, 24.54041091060241)
         mMap.addMarker(MarkerOptions()
@@ -55,6 +51,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val uiSettings = googleMap.uiSettings
         uiSettings.isZoomControlsEnabled = true
+
+        mMap.setOnMarkerClickListener { marker ->
+            val dialog = BottomSheetDialog(this)
+            val view=layoutInflater.inflate(R.layout.bottom_sheet_dialog,null)
+            dialog.setContentView(view)
+            dialog.show()
+            false
+        }
+
+
 
     }
 }
