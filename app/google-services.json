@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "451820428388",
+    "project_id": "lopputehtavatulipaikat",
+    "storage_bucket": "lopputehtavatulipaikat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451820428388:android:9e665b1e322b85c8311371",
+        "android_client_info": {
+          "package_name": "com.example.lopputehtava_tulipaikat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "451820428388-uvflifgb4iar9141b5pbv5bbrup93hn6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNzgPGOXAnyo8GUDFUYF7gM0dB_P-BV1o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "451820428388-uvflifgb4iar9141b5pbv5bbrup93hn6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
