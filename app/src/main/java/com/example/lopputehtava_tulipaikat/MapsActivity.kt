@@ -3,6 +3,8 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.widget.CheckBox
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -18,21 +20,19 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Marker
+import com.google.firebase.database.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
+    private lateinit var database: DatabaseReference
     //Current locationia varten
     private lateinit var lastLocation: Location
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     companion object{
         private const val  REQUEST_CODE=1 //voi olla mikä luku tahansa
     }
-    val ekaPaikka=Paikka("Aulangon tulipaikka 1",LatLng(61.027766109993266, 24.47456521326111), "Järven rannalla, ei laavua")
-    val tokaPaikka=Paikka("Aulangon nuotiopaikka 2", LatLng(61.03217572704121, 24.46314010584156),"Aulanko 2", 1)
-    val kolmasPaikka=Paikka("Kiikelin laavu", LatLng(65.74113055245003, 24.54041091060241),"Jotain", 1)
-    val listaPaikoista=arrayOf(ekaPaikka, tokaPaikka, kolmasPaikka)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,34 +52,36 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mMap.uiSettings.isZoomControlsEnabled=true
         mMap.setOnMarkerClickListener(this)
         setUpMap()
-        for(paikka in listaPaikoista){
-            NaytaValmiitMarkkerit(paikka)
-        }
+        lisaaMarkkeritKartalle()
     }
-      //  val zoom = 12.0f
 
-       /* val kemiKiikeli = LatLng(65.74113055245003, 24.54041091060241)
-        mMap.addMarker(MarkerOptions()
-            .position(kemiKiikeli)
-            .title("Kiikelin laavu, Kemi")
-            .snippet("Kiikelin laavu Kemissä...JNEJNEJNE")
-        )
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(kemiKiikeli, zoom))
+    private fun lisaaMarkkeritKartalle() {
+        val zoom = 13.0
+        database = FirebaseDatabase.getInstance().getReference("Tulipaikat")
+        database.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    for (paikka in snapshot.children) {
+                        val lat = paikka.child("Lat").value
+                        val lng = paikka.child("Lng").value
+                        val paikannimi = paikka.child("Nimi").value
+                        val lokaatio = LatLng(lat as Double, lng as Double)
+                        val tagi = paikka.key as String
+                        println(tagi)
 
-        val uiSettings = googleMap.uiSettings
-        uiSettings.isZoomControlsEnabled = true
-
-        mMap.setOnMarkerClickListener { marker ->
-            val dialog = BottomSheetDialog(this)
-            val view=layoutInflater.inflate(R.layout.bottom_sheet_dialog,null)
-            dialog.setContentView(view)
-            dialog.show()
-            false
-        }
-
-*/
-
-
+                        var m = mMap.addMarker(MarkerOptions()
+                            .position(lokaatio)
+                            .title(paikannimi as String?))
+                        m?.tag = tagi
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lokaatio, zoom.toFloat()))
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+    }
 
     private fun setUpMap() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION
@@ -104,24 +106,43 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         markerOptions.title("Olet tässä")
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
         mMap.addMarker(markerOptions)
-
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
-        //Toast.makeText(this, "jtn infoa"+ marker.title, Toast.LENGTH_SHORT).show()
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 12f))
-        val dialog = BottomSheetDialog(this)
-        val view=layoutInflater.inflate(R.layout.bottom_sheet_dialog,null)
-        dialog.setContentView(view)
-        dialog.show()
+
+        database = FirebaseDatabase.getInstance().getReference("Tulipaikat")
+        database.child(marker.tag.toString()).get().addOnSuccessListener {
+            if (it.exists()) {
+                var paikkaNimi = it.child("Nimi").value as String
+                var kuvaus = it.child("Kuvaus").value as String
+                var lat = it.child("Lat").value as Double
+                var lng = it.child("Lng").value as Double
+                var onkoVessaa = it.child("Vessa").value as Boolean
+                var onkoPuita = it.child("Puut").value as Boolean
+
+                val dialog = BottomSheetDialog(this)
+                val view=layoutInflater.inflate(R.layout.bottom_sheet_dialog,null)
+                var paikka: TextView = view.findViewById(R.id.nimiTxt)
+                var koordinaatit: TextView = view.findViewById(R.id.koordinaatitTxt)
+                var kuvausTeksti: TextView = view.findViewById(R.id.kuvausTxt)
+                var vessaCB: CheckBox = view.findViewById(R.id.vessaCb)
+                var puutCB: CheckBox = view.findViewById(R.id.puutCb)
+
+                paikka.text = paikkaNimi
+                kuvausTeksti.text = kuvaus
+                koordinaatit.text = "Lat: " + lat.toString() + " " + "Lng: " + lng.toString()
+                if(onkoVessaa){
+                    vessaCB.isChecked = true
+                }
+                if(onkoPuita){
+                    puutCB.isChecked = true
+                }
+                dialog.setContentView(view)
+                dialog.show()
+            }
+        }
         false
         return false
-    }
-    //override fun onMarkerClick(p0: Marker)=false
-    private fun NaytaValmiitMarkkerit(paikka:Paikka){
-        val markerOptions= MarkerOptions().position(paikka.koordinaatit)
-        markerOptions.title(paikka.nimi)
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
-        mMap.addMarker(markerOptions)
     }
 }

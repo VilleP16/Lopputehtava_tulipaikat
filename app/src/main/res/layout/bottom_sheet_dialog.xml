@@ -9,7 +9,7 @@
         android:layout_margin="2dp">
 
         <TextView
-            android:id="@+id/idTVCourseName"
+            android:id="@+id/nimiTxt"
             android:layout_width="370dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -20,10 +20,10 @@
             android:textStyle="bold" />
 
         <ImageView
-            android:id="@+id/idIVCourse"
+            android:id="@+id/kuvaImg"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_below="@+id/idTVCourseName"
+            android:layout_below="@+id/nimiTxt"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="30dp"
             android:layout_marginRight="10dp"
@@ -32,22 +32,22 @@
              />
 
         <TextView
-            android:id="@+id/idTVCourseTracks"
+            android:id="@+id/kuvausTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/idTVCourseName"
+            android:layout_below="@+id/nimiTxt"
             android:layout_marginTop="30dp"
             android:layout_marginRight="10dp"
-            android:layout_toRightOf="@id/idIVCourse"
+            android:layout_toRightOf="@id/kuvaImg"
             android:text="Kiikeli tarjoaa monenlaisia ulkoilumahdollisuuksia ympäri vuoden.Kiikelissä voi retkeillä kävellen, juosten, pyöräillen tai lumikenkäillen. Lumettomana aikana lähimetsässä on helppokulkuisia ja lyhyitä luontopolkuja, jotka ohjautuvat Kiikelin näköalatornille ja laavulle meren rantaan."
             android:textColor="@color/black"
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/koordinaatit"
+            android:id="@+id/koordinaatitTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/idIVCourse"
+            android:layout_below="@+id/kuvaImg"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
             android:layout_marginRight="250dp"
@@ -55,27 +55,29 @@
             android:textSize="10sp" />
 
         <CheckBox
-            android:id="@+id/polttopuut"
+            android:id="@+id/puutCb"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_below="@+id/idTVCourseTracks"
+            android:layout_below="@+id/kuvausTxt"
             android:layout_marginTop="40dp"
             android:layout_marginRight="10dp"
-            android:layout_toRightOf="@id/idIVCourse"
+            android:layout_toRightOf="@id/kuvaImg"
             android:gravity="top"
             android:paddingTop="5dp"
-            android:text="Polttopuita" />
+            android:text="Polttopuita"
+            android:checked="false"/>
 
         <CheckBox
-            android:id="@+id/vessa"
+            android:id="@+id/vessaCb"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_below="@+id/idTVCourseTracks"
+            android:layout_below="@+id/kuvausTxt"
             android:layout_marginTop="40dp"
-            android:layout_toRightOf="@id/polttopuut"
+            android:layout_toRightOf="@id/puutCb"
             android:gravity="top"
             android:paddingTop="5dp"
-            android:text="Vessa" />
+            android:text="Vessa"
+            android:checked="false"/>
 
     </RelativeLayout>
 
