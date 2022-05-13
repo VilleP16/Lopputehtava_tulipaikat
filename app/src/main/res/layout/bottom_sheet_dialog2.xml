@@ -9,7 +9,7 @@
         android:layout_margin="2dp">
 
         <TextView
-            android:id="@+id/idTVCourseName"
+            android:id="@+id/otsikko"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -20,13 +20,13 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/koordinaatit"
+            android:id="@+id/koordinaatitTxt"
             android:layout_width="210dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
             android:layout_marginRight="250dp"
-            android:layout_toEndOf="@+id/idTVCourseName"
+            android:layout_toEndOf="@+id/otsikko"
             android:gravity="right"
             android:text="65.744145, 24.544069"
             android:textSize="10dp" />
@@ -35,7 +35,7 @@
             android:id="@+id/nimiText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/idTVCourseName"
+            android:layout_below="@+id/otsikko"
             android:paddingLeft="10dp"
             android:paddingTop="30dp"
             android:text="Nimi:" />
@@ -83,7 +83,7 @@
             android:textSize="10dp" />
 
         <CheckBox
-            android:id="@+id/polttopuut"
+            android:id="@+id/polttopuutCb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/kuvausInput"
@@ -95,12 +95,12 @@
             android:text="Polttopuita" />
 
         <CheckBox
-            android:id="@+id/vessa"
+            android:id="@+id/vessaCb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/kuvausInput"
             android:layout_marginTop="30dp"
-            android:layout_toRightOf="@id/polttopuut"
+            android:layout_toRightOf="@id/polttopuutCb"
             android:gravity="top"
             android:paddingTop="5dp"
             android:text="Vessa" />
@@ -109,12 +109,12 @@
             android:id="@+id/tallennaBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/vessa"
+            android:layout_below="@+id/vessaCb"
             android:layout_marginLeft="140dp"
             android:layout_marginTop="55dp"
-            android:text="Lisää"
+            android:layout_toRightOf="@+id/kuvaBtn"
 
-            android:layout_toRightOf="@+id/kuvaBtn" />
+            android:text="Lisää" />
 
     </RelativeLayout>
 

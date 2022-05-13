@@ -3,9 +3,8 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.widget.CheckBox
-import android.widget.TextView
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.lopputehtava_tulipaikat.databinding.ActivityMapsBinding
@@ -53,8 +52,52 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mMap.setOnMarkerClickListener(this)
         setUpMap()
         lisaaMarkkeritKartalle()
+
+        mMap.setOnMapLongClickListener {
+
+            val klikinKoordinaatit = LatLng(it.latitude, it.longitude)
+            avaaTulipaikanLisaysSheet(klikinKoordinaatit)
+
+        }
+
+
     }
 
+    private fun avaaTulipaikanLisaysSheet(koordinaatit : LatLng) {
+        val dialog = BottomSheetDialog(this)
+        val view=layoutInflater.inflate(R.layout.bottom_sheet_dialog2,null)
+        dialog.setContentView(view)
+        dialog.show()
+
+        //tallennetaan data
+        var paikanNimi = view.findViewById<EditText>(R.id.nimiInput)
+        var paikanKuvaus = view.findViewById<EditText>(R.id.kuvausInput)
+        var onkoPuita = view.findViewById<CheckBox>(R.id.polttopuutCb)
+        var onkoVessaa = view.findViewById<CheckBox>(R.id.vessaCb)
+        var paikanKoordinaatit = koordinaatit
+        var lisaaButton = view.findViewById<Button>(R.id.tallennaBtn)
+        var koordinaatitSheetissa = view.findViewById<TextView>(R.id.koordinaatitTxt)
+        koordinaatitSheetissa.text = "Lat: " + koordinaatit.latitude +  "Lng: "  + koordinaatit.longitude
+
+        lisaaButton.setOnClickListener(){
+            println(paikanNimi.text)
+            println(paikanKuvaus.text)
+            println(onkoPuita.isChecked)
+            println(onkoVessaa.isChecked)
+            println(paikanKoordinaatit.toString())
+
+            database = FirebaseDatabase.getInstance().getReference("Tulipaikat")
+            var key = database.push().key.toString()
+            database.child(key).child("Nimi").setValue(paikanNimi.text.toString())
+            database.child(key).child("Kuvaus").setValue(paikanKuvaus.text.toString())
+            database.child(key).child("Puut").setValue((onkoPuita.isChecked))
+            database.child(key).child("Vessa").setValue((onkoVessaa.isChecked))
+            database.child(key).child("Lat").setValue(koordinaatit.latitude)
+            database.child(key).child("Lng").setValue(koordinaatit.longitude)
+            lisaaMarkkeritKartalle()
+        }
+
+    }
     private fun lisaaMarkkeritKartalle() {
         val zoom = 13.0
         database = FirebaseDatabase.getInstance().getReference("Tulipaikat")
@@ -73,7 +116,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             .position(lokaatio)
                             .title(paikannimi as String?))
                         m?.tag = tagi
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lokaatio, zoom.toFloat()))
+                        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lokaatio, zoom.toFloat()))
                     }
                 }
             }
@@ -145,4 +188,5 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         false
         return false
     }
+
 }
