@@ -80,11 +80,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         koordinaatitSheetissa.text = "Lat: " + koordinaatit.latitude +  "Lng: "  + koordinaatit.longitude
 
         lisaaButton.setOnClickListener(){
-            println(paikanNimi.text)
-            println(paikanKuvaus.text)
-            println(onkoPuita.isChecked)
-            println(onkoVessaa.isChecked)
-            println(paikanKoordinaatit.toString())
+
 
             database = FirebaseDatabase.getInstance().getReference("Tulipaikat")
             var key = database.push().key.toString()
@@ -94,7 +90,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             database.child(key).child("Vessa").setValue((onkoVessaa.isChecked))
             database.child(key).child("Lat").setValue(koordinaatit.latitude)
             database.child(key).child("Lng").setValue(koordinaatit.longitude)
-            lisaaMarkkeritKartalle()
+            dialog.dismiss()
+
         }
 
     }
@@ -104,11 +101,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
-                    for (paikka in snapshot.children) {
+                    try {
+                        for (paikka in snapshot.children) {
                         val lat = paikka.child("Lat").value
                         val lng = paikka.child("Lng").value
                         val paikannimi = paikka.child("Nimi").value
-                        val lokaatio = LatLng(lat as Double, lng as Double)
+                        val lokaatio = LatLng(lat!! as Double, lng!! as Double)
                         val tagi = paikka.key as String
                         println(tagi)
 
@@ -116,7 +114,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                             .position(lokaatio)
                             .title(paikannimi as String?))
                         m?.tag = tagi
-                        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lokaatio, zoom.toFloat()))
+
+                    }
+                    } catch(e: Exception) {
+                        println("Non nullable virhe mutta ei kaadu ohjelma")
                     }
                 }
             }
