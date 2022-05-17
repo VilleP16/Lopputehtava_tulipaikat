@@ -72,12 +72,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         //tallennetaan data
         var paikanNimi = view.findViewById<EditText>(R.id.nimiInput)
         var paikanKuvaus = view.findViewById<EditText>(R.id.kuvausInput)
-        var onkoPuita = view.findViewById<CheckBox>(R.id.polttopuutCb)
+        var onkoPuita = view.findViewById<CheckBox>(R.id.puutCb)
         var onkoVessaa = view.findViewById<CheckBox>(R.id.vessaCb)
         var paikanKoordinaatit = koordinaatit
         var lisaaButton = view.findViewById<Button>(R.id.tallennaBtn)
         var koordinaatitSheetissa = view.findViewById<TextView>(R.id.koordinaatitTxt)
-        koordinaatitSheetissa.text = "Lat: " + koordinaatit.latitude +  "Lng: "  + koordinaatit.longitude
+        koordinaatitSheetissa.text = "" + koordinaatit.latitude +  " , "  + koordinaatit.longitude
 
         lisaaButton.setOnClickListener(){
             println(paikanNimi.text)
@@ -174,7 +174,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                 paikka.text = paikkaNimi
                 kuvausTeksti.text = kuvaus
-                koordinaatit.text = "Lat: " + lat.toString() + " " + "Lng: " + lng.toString()
+                koordinaatit.text = lat.toString() + " , " + lng.toString()
                 if(onkoVessaa){
                     vessaCB.isChecked = true
                 }
