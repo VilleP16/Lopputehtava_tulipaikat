@@ -7,4 +7,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    //Asetettu teeman värit
+    <color name="primaryColor">#00695d</color>
+    <color name="primaryLightColor">#43988a</color>
+    <color name="primaryDarkColor">#003d34</color>
+    <color name="secondaryColor">#f47a45</color>
+    <color name="secondaryLightColor">#ffab72</color>
+    <color name="secondaryDarkColor">#bc4b19</color>
+    <color name="primaryTextColor">#ffffff</color>
+    <color name="secondaryTextColor">#000000</color>
+
 </resources>

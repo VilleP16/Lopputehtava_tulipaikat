@@ -1,84 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="328dp"
-        android:layout_margin="2dp">
 
-        <TextView
-            android:id="@+id/nimiTxt"
-            android:layout_width="370dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:text="Kiikelin laavu"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/nimiTxt"
+        style="@style/TextAppearance.MdcTypographyStyles.Headline5"
+        android:layout_width="297dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:text="Tulipaikan nimi"
+        app:layout_constraintBottom_toTopOf="@+id/koordinaatitTxt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/ikoniImg"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/kuvaImg"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_below="@+id/nimiTxt"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:scaleType="fitXY"
-             />
+    <ImageView
+        android:id="@+id/ikoniImg"
+        android:layout_width="55dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/nimiTxt"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_local_fire_department_24" />
 
-        <TextView
-            android:id="@+id/kuvausTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/nimiTxt"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="10dp"
-            android:layout_toRightOf="@id/kuvaImg"
-            android:text="Kiikeli tarjoaa monenlaisia ulkoilumahdollisuuksia ympäri vuoden.Kiikelissä voi retkeillä kävellen, juosten, pyöräillen tai lumikenkäillen. Lumettomana aikana lähimetsässä on helppokulkuisia ja lyhyitä luontopolkuja, jotka ohjautuvat Kiikelin näköalatornille ja laavulle meren rantaan."
-            android:textColor="@color/black"
-            android:textSize="12sp" />
+    <TextView
+        android:id="@+id/koordinaatitTxt"
+        style="@style/TextAppearance.MdcTypographyStyles.Caption"
+        android:layout_width="291dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="16dp"
+        android:text="65.744145, 24.544069"
+        app:layout_constraintStart_toEndOf="@+id/ikoniImg"
+        app:layout_constraintTop_toBottomOf="@+id/nimiTxt" />
 
-        <TextView
-            android:id="@+id/koordinaatitTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/kuvaImg"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="250dp"
-            android:text="65.744145, 24.544069"
-            android:textSize="10sp" />
+    <ImageView
+        android:id="@+id/kuvaImg"
+        android:layout_width="0dp"
+        android:layout_height="203dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/koordinaatitTxt"
+        app:srcCompat="@drawable/kiikeli" />
 
-        <CheckBox
-            android:id="@+id/puutCb"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/kuvausTxt"
-            android:layout_marginTop="40dp"
-            android:layout_marginRight="10dp"
-            android:layout_toRightOf="@id/kuvaImg"
-            android:gravity="top"
-            android:paddingTop="5dp"
-            android:text="Polttopuita"
-            android:checked="false"/>
+    <TextView
+        android:id="@+id/kuvausTxt"
+        style="@style/TextAppearance.MdcTypographyStyles.Subtitle2"
+        android:layout_width="0dp"
+        android:layout_height="73dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:text="Kuvaus"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/kuvaImg" />
 
-        <CheckBox
-            android:id="@+id/vessaCb"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/kuvausTxt"
-            android:layout_marginTop="40dp"
-            android:layout_toRightOf="@id/puutCb"
-            android:gravity="top"
-            android:paddingTop="5dp"
-            android:text="Vessa"
-            android:checked="false"/>
+    <CheckBox
+        android:id="@+id/puutCb"
+        style="@style/TextAppearance.MdcTypographyStyles.Subtitle1"
+        android:layout_width="0dp"
+        android:layout_height="57dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
+        android:text="Polttopuita"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/vessaCb"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/kuvausTxt" />
 
-    </RelativeLayout>
+    <CheckBox
+        android:id="@+id/vessaCb"
+        style="@style/TextAppearance.MdcTypographyStyles.Subtitle1"
+        android:layout_width="0dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
+        android:text="Vessa"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/puutCb"
+        app:layout_constraintTop_toBottomOf="@+id/kuvausTxt" />
 
-</androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
