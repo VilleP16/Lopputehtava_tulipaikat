@@ -247,7 +247,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         //  Toast.makeText(this, kuvanNimi,Toast.LENGTH_LONG).show()//testi. Kuvan nimi on sama kuin markkerin key/tag
         val storageRef = FirebaseStorage.getInstance().reference
         val kuvanPaikka:ImageView=view.findViewById(R.id.kuvaImg)
-        storageRef.child("images/$kuvanNimi.jpg").downloadUrl.addOnSuccessListener {
+        storageRef.child("images/$kuvanNimi").downloadUrl.addOnSuccessListener {
             Glide.with(this ).load(it).into(kuvanPaikka)
         }.addOnFailureListener {
             // Handle any errors
