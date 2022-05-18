@@ -1,12 +1,15 @@
 package com.example.lopputehtava_tulipaikat
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.bumptech.glide.Glide
 import com.example.lopputehtava_tulipaikat.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -20,6 +23,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Marker
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -32,6 +36,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     companion object{
         private const val  REQUEST_CODE=1 //voi olla mikä luku tahansa
     }
+
+    //kuvan lisäykseen
+    private lateinit var tallennaKuvaBtn:Button
+    private var imageUri: Uri?=null
+  //Storagen voisi määritellä jo täällä, niin ei tule toistettua myöhemmin turhaa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +87,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         var lisaaButton = view.findViewById<Button>(R.id.tallennaBtn)
         var koordinaatitSheetissa = view.findViewById<TextView>(R.id.koordinaatitTxt)
         koordinaatitSheetissa.text = "" + koordinaatit.latitude +  " , "  + koordinaatit.longitude
-
+        tallennaKuvaBtn=view.findViewById(R.id.kuvaBtn)
         lisaaButton.setOnClickListener(){
 
 
@@ -90,11 +99,46 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             database.child(key).child("Vessa").setValue((onkoVessaa.isChecked))
             database.child(key).child("Lat").setValue(koordinaatit.latitude)
             database.child(key).child("Lng").setValue(koordinaatit.longitude)
+
+            //tallennetaan kuva storageen
+            imageUri?.let { it1 -> uploadImg(it1, "testi") }
+            //Toast.makeText(this, "Tulipaikka lisätty",Toast.LENGTH_SHORT).show()
             dialog.dismiss()
 
+
+        }
+        tallennaKuvaBtn.setOnClickListener{
+            selectImage()
         }
 
     }
+//Kuvan valitseminen puhelimesta
+    private fun selectImage() {
+        val intent= Intent()
+        intent.type="image/*"
+        intent.action= Intent.ACTION_GET_CONTENT
+        startActivityForResult(intent,100)
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode==100 && resultCode== RESULT_OK){
+            imageUri= data?.data!!
+
+            //tallennaKuvaBtn.setImageURI(ImageUri)
+        }
+    }
+    private fun uploadImg(imagUri: Uri, id:String) {
+        if(imagUri!=null){
+            val refStorage = FirebaseStorage.getInstance().reference.child("images/$id") //tähän oikea kansion nimi images tilalle
+            refStorage.putFile(imagUri).addOnSuccessListener {
+                Toast.makeText(this, "Tulipaikka lisätty",Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener{
+                Toast.makeText(this, "Kuva meni pieleen",Toast.LENGTH_SHORT).show()
+            }
+
+        }
+    }
+
     private fun lisaaMarkkeritKartalle() {
         val zoom = 13.0
         database = FirebaseDatabase.getInstance().getReference("Tulipaikat")
@@ -154,7 +198,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     override fun onMarkerClick(marker: Marker): Boolean {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 12f))
-
+        val dialog = BottomSheetDialog(this)
+        val view=layoutInflater.inflate(R.layout.bottom_sheet_dialog,null)
         database = FirebaseDatabase.getInstance().getReference("Tulipaikat")
         database.child(marker.tag.toString()).get().addOnSuccessListener {
             if (it.exists()) {
@@ -165,8 +210,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 var onkoVessaa = it.child("Vessa").value as Boolean
                 var onkoPuita = it.child("Puut").value as Boolean
 
-                val dialog = BottomSheetDialog(this)
-                val view=layoutInflater.inflate(R.layout.bottom_sheet_dialog,null)
+               // val dialog = BottomSheetDialog(this)
+               // val view=layoutInflater.inflate(R.layout.bottom_sheet_dialog,null)
                 var paikka: TextView = view.findViewById(R.id.nimiTxt)
                 var koordinaatit: TextView = view.findViewById(R.id.koordinaatitTxt)
                 var kuvausTeksti: TextView = view.findViewById(R.id.kuvausTxt)
@@ -185,8 +230,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 dialog.setContentView(view)
                 dialog.show()
             }
+
+
         }
-        false
+        val kuvanNimi=marker.tag.toString()
+        //  Toast.makeText(this, kuvanNimi,Toast.LENGTH_LONG).show()//testi. Kuvan nimi on sama kuin markkerin key/tag
+        val storageRef = FirebaseStorage.getInstance().reference
+        var kuvanPaikka:ImageView=view.findViewById(R.id.kuvaImg)
+        storageRef.child("images/$kuvanNimi").downloadUrl.addOnSuccessListener {
+            Glide.with(this ).load(it).into(kuvanPaikka)
+        }.addOnFailureListener {
+            // Handle any errors
+        }
+
+
+      //  false  18.5 en tiiä mikä tämä oli, vissiin vahinko false
         return false
     }
 
