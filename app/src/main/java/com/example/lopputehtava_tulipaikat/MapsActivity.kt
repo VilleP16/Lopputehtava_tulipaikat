@@ -1,11 +1,11 @@
 package com.example.lopputehtava_tulipaikat
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -22,7 +22,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Marker
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 
@@ -78,6 +77,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun lisaaUusiTulipaikka(koordinaatit : LatLng) {
         val dialog = BottomSheetDialog(this)
         val view=layoutInflater.inflate(R.layout.bottom_sheet_dialog2,null)
@@ -94,7 +94,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         tallennaKuvaBtn=view.findViewById(R.id.kuvaBtn)
         key = database.push().key.toString()
 
-        tallennaTulipaikkaButton.setOnClickListener(){
+        tallennaTulipaikkaButton.setOnClickListener{
 
             if(tekstiKentatTayttavatEhdot(paikanNimi.text.toString(),paikanKuvaus.text.toString())){
                 database = FirebaseDatabase.getInstance().getReference("Tulipaikat")
@@ -163,7 +163,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         val lokaatio = LatLng(lat!! as Double, lng!! as Double)
                         val tagi = paikka.key as String
 
-                        var m = mMap.addMarker(MarkerOptions()
+                            val m = mMap.addMarker(MarkerOptions()
                             .position(lokaatio)
                             .title(paikannimi as String?))
                         m?.tag = tagi
@@ -205,6 +205,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mMap.addMarker(markerOptions)
     }
 
+    @SuppressLint("InflateParams")
     override fun onMarkerClick(marker: Marker): Boolean {
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 12f))
         val dialog = BottomSheetDialog(this)
@@ -212,24 +213,24 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         database = FirebaseDatabase.getInstance().getReference("Tulipaikat")
         database.child(marker.tag.toString()).get().addOnSuccessListener {
             if (it.exists()) {
-                var paikkaNimi = it.child("Nimi").value as String
-                var kuvaus = it.child("Kuvaus").value as String
-                var lat = it.child("Lat").value as Double
-                var lng = it.child("Lng").value as Double
-                var onkoVessaa = it.child("Vessa").value as Boolean
-                var onkoPuita = it.child("Puut").value as Boolean
+                val paikkaNimi = it.child("Nimi").value as String
+                val kuvaus = it.child("Kuvaus").value as String
+                val lat = it.child("Lat").value as Double
+                val lng = it.child("Lng").value as Double
+                val onkoVessaa = it.child("Vessa").value as Boolean
+                val onkoPuita = it.child("Puut").value as Boolean
 
                // val dialog = BottomSheetDialog(this)
                // val view=layoutInflater.inflate(R.layout.bottom_sheet_dialog,null)
-                var paikka: TextView = view.findViewById(R.id.nimiTxt)
-                var koordinaatit: TextView = view.findViewById(R.id.koordinaatitTxt)
-                var kuvausTeksti: TextView = view.findViewById(R.id.kuvausTxt)
-                var vessaCB: CheckBox = view.findViewById(R.id.vessaCb)
-                var puutCB: CheckBox = view.findViewById(R.id.puutCb)
+                val paikka: TextView = view.findViewById(R.id.nimiTxt)
+                val koordinaatit: TextView = view.findViewById(R.id.koordinaatitTxt)
+                val kuvausTeksti: TextView = view.findViewById(R.id.kuvausTxt)
+                val vessaCB: CheckBox = view.findViewById(R.id.vessaCb)
+                val puutCB: CheckBox = view.findViewById(R.id.puutCb)
 
                 paikka.text = paikkaNimi
                 kuvausTeksti.text = kuvaus
-                koordinaatit.text = lat.toString() + " , " + lng.toString()
+                koordinaatit.text = "$lat , $lng"
                 if(onkoVessaa){
                     vessaCB.isChecked = true
                 }
@@ -245,7 +246,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val kuvanNimi=marker.tag.toString()
         //  Toast.makeText(this, kuvanNimi,Toast.LENGTH_LONG).show()//testi. Kuvan nimi on sama kuin markkerin key/tag
         val storageRef = FirebaseStorage.getInstance().reference
-        var kuvanPaikka:ImageView=view.findViewById(R.id.kuvaImg)
+        val kuvanPaikka:ImageView=view.findViewById(R.id.kuvaImg)
         storageRef.child("images/$kuvanNimi.jpg").downloadUrl.addOnSuccessListener {
             Glide.with(this ).load(it).into(kuvanPaikka)
         }.addOnFailureListener {
