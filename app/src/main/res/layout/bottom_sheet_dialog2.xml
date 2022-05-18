@@ -96,14 +96,14 @@
 
     <CheckBox
         android:id="@+id/puutCb"
-        android:layout_width="134dp"
-        android:layout_height="43dp"
+        style="@style/TextAppearance.MdcTypographyStyles.Body1"
+        android:layout_width="136dp"
+        android:layout_height="52dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
 
+        android:layout_marginTop="16dp"
         android:layout_toRightOf="@+id/kuvaBtn"
         android:text="Polttopuita"
-        style="@style/TextAppearance.MdcTypographyStyles.Body1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
