@@ -19,6 +19,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Marker
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.database.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -52,15 +53,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mMap.setOnMarkerClickListener(this)
         setUpMap()
         lisaaMarkkeritKartalle()
-
+        
         mMap.setOnMapLongClickListener {
 
             val klikinKoordinaatit = LatLng(it.latitude, it.longitude)
             avaaTulipaikanLisaysSheet(klikinKoordinaatit)
 
         }
-
-
+        Toast.makeText(applicationContext,"Voit lisätä uuden tulipaikan painamalla karttaa pitkään",Toast.LENGTH_LONG).show()
     }
 
     private fun avaaTulipaikanLisaysSheet(koordinaatit : LatLng) {
