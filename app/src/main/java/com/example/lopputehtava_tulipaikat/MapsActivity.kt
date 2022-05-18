@@ -37,7 +37,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     companion object{
         private const val  REQUEST_CODE=1 //voi olla mikä luku tahansa
     }
-
+    //uuden paikan lisäykseen
+    private lateinit var paikanNimi:EditText
+    private lateinit var paikanKuvaus: EditText
+    private lateinit var onkoPuita: CheckBox
+    private lateinit var onkoVessaa: CheckBox
+    private  lateinit var tallennaTulipaikkaButton: Button
+    private  lateinit var koordinaatitSheetissa: TextView
+    private lateinit var key: String
     //kuvan lisäykseen
     private lateinit var tallennaKuvaBtn:Button
     private var imageUri: Uri?=null
@@ -62,57 +69,61 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         mMap.setOnMarkerClickListener(this)
         setUpMap()
         lisaaMarkkeritKartalle()
+        Toast.makeText(applicationContext,"Voit lisätä uuden tulipaikan painamalla karttaa pitkään",Toast.LENGTH_LONG).show()
         
         mMap.setOnMapLongClickListener {
 
             val klikinKoordinaatit = LatLng(it.latitude, it.longitude)
-            avaaTulipaikanLisaysSheet(klikinKoordinaatit)
-
+            lisaaUusiTulipaikka(klikinKoordinaatit)
         }
-        Toast.makeText(applicationContext,"Voit lisätä uuden tulipaikan painamalla karttaa pitkään",Toast.LENGTH_LONG).show()
     }
 
-    private fun avaaTulipaikanLisaysSheet(koordinaatit : LatLng) {
+    private fun lisaaUusiTulipaikka(koordinaatit : LatLng) {
         val dialog = BottomSheetDialog(this)
         val view=layoutInflater.inflate(R.layout.bottom_sheet_dialog2,null)
         dialog.setContentView(view)
         dialog.show()
 
-        //tallennetaan data
-        var paikanNimi = view.findViewById<EditText>(R.id.nimiInput)
-        var paikanKuvaus = view.findViewById<EditText>(R.id.kuvausInput)
-        var onkoPuita = view.findViewById<CheckBox>(R.id.puutCb)
-        var onkoVessaa = view.findViewById<CheckBox>(R.id.vessaCb)
-        var paikanKoordinaatit = koordinaatit
-        var lisaaButton = view.findViewById<Button>(R.id.tallennaBtn)
-        var koordinaatitSheetissa = view.findViewById<TextView>(R.id.koordinaatitTxt)
+        paikanNimi = view.findViewById(R.id.nimiInput)
+        paikanKuvaus = view.findViewById(R.id.kuvausInput)
+        onkoPuita = view.findViewById(R.id.puutCb)
+        onkoVessaa = view.findViewById(R.id.vessaCb)
+        tallennaTulipaikkaButton = view.findViewById(R.id.tallennaBtn)
+        koordinaatitSheetissa = view.findViewById(R.id.koordinaatitTxt)
         koordinaatitSheetissa.text = "" + koordinaatit.latitude +  " , "  + koordinaatit.longitude
         tallennaKuvaBtn=view.findViewById(R.id.kuvaBtn)
-        lisaaButton.setOnClickListener(){
+        key = database.push().key.toString()
 
+        tallennaTulipaikkaButton.setOnClickListener(){
 
-            database = FirebaseDatabase.getInstance().getReference("Tulipaikat")
-            var key = database.push().key.toString()
-            database.child(key).child("Nimi").setValue(paikanNimi.text.toString())
-            database.child(key).child("Kuvaus").setValue(paikanKuvaus.text.toString())
-            database.child(key).child("Puut").setValue((onkoPuita.isChecked))
-            database.child(key).child("Vessa").setValue((onkoVessaa.isChecked))
-            database.child(key).child("Lat").setValue(koordinaatit.latitude)
-            database.child(key).child("Lng").setValue(koordinaatit.longitude)
+            if(tekstiKentatTayttavatEhdot(paikanNimi.text.toString(),paikanKuvaus.text.toString())){
+                database = FirebaseDatabase.getInstance().getReference("Tulipaikat")
 
+                database.child(key).child("Nimi").setValue(paikanNimi.text.toString())
+                database.child(key).child("Kuvaus").setValue(paikanKuvaus.text.toString())
+                database.child(key).child("Puut").setValue((onkoPuita.isChecked))
+                database.child(key).child("Vessa").setValue((onkoVessaa.isChecked))
+                database.child(key).child("Lat").setValue(koordinaatit.latitude)
+                database.child(key).child("Lng").setValue(koordinaatit.longitude)
+                dialog.dismiss()
+            }
             //tallennetaan kuva storageen
-            imageUri?.let { it1 -> uploadImg(it1, "testi") }
+            imageUri?.let { it1 -> uploadImg(it1, key) }
             //Toast.makeText(this, "Tulipaikka lisätty",Toast.LENGTH_SHORT).show()
-            dialog.dismiss()
-
-
         }
         tallennaKuvaBtn.setOnClickListener{
             selectImage()
         }
-
     }
-//Kuvan valitseminen puhelimesta
+
+    private fun tekstiKentatTayttavatEhdot(nimi:String, kuvaus: String): Boolean {
+            if(nimi.isNotEmpty() && nimi.length <= 20 && kuvaus.isNotEmpty() && kuvaus.length <= 20){
+                return true
+            }
+        return false
+    }
+
+    //Kuvan valitseminen puhelimesta
     private fun selectImage() {
         val intent= Intent()
         intent.type="image/*"
@@ -140,7 +151,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun lisaaMarkkeritKartalle() {
-        val zoom = 13.0
         database = FirebaseDatabase.getInstance().getReference("Tulipaikat")
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -152,7 +162,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                         val paikannimi = paikka.child("Nimi").value
                         val lokaatio = LatLng(lat!! as Double, lng!! as Double)
                         val tagi = paikka.key as String
-                        println(tagi)
 
                         var m = mMap.addMarker(MarkerOptions()
                             .position(lokaatio)
@@ -237,7 +246,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         //  Toast.makeText(this, kuvanNimi,Toast.LENGTH_LONG).show()//testi. Kuvan nimi on sama kuin markkerin key/tag
         val storageRef = FirebaseStorage.getInstance().reference
         var kuvanPaikka:ImageView=view.findViewById(R.id.kuvaImg)
-        storageRef.child("images/$kuvanNimi").downloadUrl.addOnSuccessListener {
+        storageRef.child("images/$kuvanNimi.jpg").downloadUrl.addOnSuccessListener {
             Glide.with(this ).load(it).into(kuvanPaikka)
         }.addOnFailureListener {
             // Handle any errors
