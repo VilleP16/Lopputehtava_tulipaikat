@@ -9,8 +9,8 @@
     <TextView
         android:id="@+id/nimiTxt"
         style="@style/TextAppearance.MdcTypographyStyles.Headline5"
-        android:layout_width="297dp"
-        android:layout_height="33dp"
+        android:layout_width="0dp"
+        android:layout_height="27dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:text="Tulipaikan nimi"
@@ -23,12 +23,11 @@
     <ImageView
         android:id="@+id/ikoniImg"
         android:layout_width="55dp"
-        android:layout_height="53dp"
+        android:layout_height="50dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
+        android:scaleType="fitStart"
         app:layout_constraintEnd_toStartOf="@+id/nimiTxt"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_local_fire_department_24" />
@@ -36,21 +35,27 @@
     <TextView
         android:id="@+id/koordinaatitTxt"
         style="@style/TextAppearance.MdcTypographyStyles.Caption"
-        android:layout_width="291dp"
-        android:layout_height="22dp"
-        android:layout_marginStart="16dp"
+        android:layout_width="0dp"
+        android:layout_height="17dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="32dp"
         android:text="65.744145, 24.544069"
-        app:layout_constraintStart_toEndOf="@+id/ikoniImg"
+        app:layout_constraintBottom_toTopOf="@+id/kuvaImg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/nimiTxt"
         app:layout_constraintTop_toBottomOf="@+id/nimiTxt" />
 
     <ImageView
         android:id="@+id/kuvaImg"
         android:layout_width="0dp"
         android:layout_height="203dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/kuvausTxt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/koordinaatitTxt"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/koordinaatitTxt" />
 
     <TextView
         android:id="@+id/kuvausTxt"
@@ -70,9 +75,9 @@
         style="@style/TextAppearance.MdcTypographyStyles.Subtitle1"
         android:layout_width="0dp"
         android:layout_height="57dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
         android:layout_marginBottom="32dp"
+        android:clickable="false"
         android:text="Polttopuita"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/vessaCb"
@@ -85,15 +90,22 @@
         style="@style/TextAppearance.MdcTypographyStyles.Subtitle1"
         android:layout_width="0dp"
         android:layout_height="57dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
+        android:clickable="false"
         android:text="Vessa"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/puutCb"
         app:layout_constraintTop_toBottomOf="@+id/kuvausTxt" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="32dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

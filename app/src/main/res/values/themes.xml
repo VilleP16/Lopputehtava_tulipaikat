@@ -14,7 +14,9 @@
         <!-- Customize your theme here. -->
     </style>
 
-
+<!--    <style name="TallennaButton" parent="Theme.AppCompat.DayNight.DarkActionBar">-->
+<!--        <item name="backgroundTint">@color/secondaryColor</item>-->
+<!--    </style>-->
 
     //fontit
     <style name="TextAppearance.MdcTypographyStyles.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
@@ -75,7 +77,7 @@
     <style name="TextAppearance.MdcTypographyStyles.Caption" parent="TextAppearance.MaterialComponents.Caption">
         <item name="fontFamily">@font/worksans</item>
         <item name="android:fontFamily">@font/worksans</item>
-        <item name="android:textSize">13sp</item>
+        <item name="android:textSize">11sp</item>
     </style>
     <style name="TextAppearance.MdcTypographyStyles.Overline" parent="TextAppearance.MaterialComponents.Overline">
         <item name="fontFamily">@font/worksans</item>

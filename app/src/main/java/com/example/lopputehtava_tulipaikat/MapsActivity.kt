@@ -117,10 +117,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun tekstiKentatTayttavatEhdot(nimi:String, kuvaus: String): Boolean {
-            if(nimi.isNotEmpty() && nimi.length <= 20 && kuvaus.isNotEmpty() && kuvaus.length <= 20){
+            if(nimi.isNotEmpty() && nimi.length <= 20 && kuvaus.isNotEmpty() && kuvaus.length <= 100){
+                Toast.makeText(this, "Tulipaikka lisätty",Toast.LENGTH_SHORT).show()
                 return true
             }
+        Toast.makeText(this, "Virhe, tarkista vaadittavat kentät",Toast.LENGTH_SHORT).show()
         return false
+
     }
 
     //Kuvan valitseminen puhelimesta
