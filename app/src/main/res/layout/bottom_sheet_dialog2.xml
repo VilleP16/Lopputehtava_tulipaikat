@@ -8,7 +8,7 @@
     <TextView
         android:id="@+id/otsikko"
         style="@style/TextAppearance.MdcTypographyStyles.Headline5"
-        android:layout_width="290dp"
+        android:layout_width="0dp"
         android:layout_height="31dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
@@ -22,11 +22,14 @@
     <TextView
         android:id="@+id/koordinaatitTxt"
         style="@style/TextAppearance.MdcTypographyStyles.Caption"
-        android:layout_width="291dp"
-        android:layout_height="37dp"
-        android:layout_marginStart="16dp"
+        android:layout_width="0dp"
+        android:layout_height="17dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="32dp"
         android:text="65.744145, 24.544069"
         app:layout_constraintBottom_toTopOf="@+id/nimiInputLayout"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/kuvaImg"
         app:layout_constraintTop_toBottomOf="@+id/otsikko" />
 
@@ -34,11 +37,14 @@
         android:id="@+id/nimiInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
-        android:layout_height="57dp"
+        android:layout_height="82dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:hint="Nimi"
+        app:counterEnabled="true"
+        app:counterMaxLength="20"
+        app:layout_constraintBottom_toTopOf="@+id/kuvausInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/koordinaatitTxt">
@@ -47,6 +53,7 @@
             android:id="@+id/nimiInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLength="20"
             android:textColorHint="#757575" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -55,11 +62,14 @@
         android:id="@+id/kuvausInputLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
-        android:layout_height="57dp"
+        android:layout_height="87dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:hint="Kuvaus"
+        app:counterEnabled="true"
+        app:counterMaxLength="100"
+        app:layout_constraintBottom_toTopOf="@+id/kuvaBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/nimiInputLayout">
@@ -67,7 +77,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/kuvausInput"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:maxLength="100" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -81,8 +92,9 @@
 
     <Button
         android:id="@+id/kuvaBtn"
-        android:layout_width="171dp"
-        android:layout_height="51dp"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="0dp"
+        android:layout_height="54dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
@@ -93,6 +105,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/kuvausInputLayout" />
+
 
     <CheckBox
         android:id="@+id/puutCb"
@@ -114,24 +127,24 @@
         style="@style/TextAppearance.MdcTypographyStyles.Body1"
         android:layout_width="135dp"
         android:layout_height="55dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:text="Vessa"
         app:layout_constraintBottom_toTopOf="@+id/tallennaBtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/puutCb" />
+        app:layout_constraintHorizontal_bias="0.723"
+        app:layout_constraintStart_toEndOf="@+id/puutCb"
+        app:layout_constraintTop_toBottomOf="@+id/kuvaBtn" />
 
     <Button
         android:id="@+id/tallennaBtn"
         android:layout_width="156dp"
         android:layout_height="51dp"
         android:layout_marginStart="250dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
-        android:text="Lisää"
+        android:text="Tallenna"
         app:icon="@drawable/ic_add"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -142,11 +155,11 @@
 
     <ImageView
         android:id="@+id/kuvaImg"
-        android:layout_width="43dp"
-        android:layout_height="41dp"
+        android:layout_width="55dp"
+        android:layout_height="50dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
+        android:scaleType="fitStart"
         app:layout_constraintEnd_toStartOf="@+id/otsikko"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

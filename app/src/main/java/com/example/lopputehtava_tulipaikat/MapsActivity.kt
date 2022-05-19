@@ -117,10 +117,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     private fun tekstiKentatTayttavatEhdot(nimi:String, kuvaus: String): Boolean {
-            if(nimi.isNotEmpty() && nimi.length <= 20 && kuvaus.isNotEmpty() && kuvaus.length <= 20){
+            if(nimi.isNotEmpty() && nimi.length <= 20 && kuvaus.isNotEmpty() && kuvaus.length <= 100){
+                Toast.makeText(this, "Tulipaikka lisätty",Toast.LENGTH_SHORT).show()
                 return true
             }
+        Toast.makeText(this, "Virhe, tarkista vaadittavat kentät",Toast.LENGTH_SHORT).show()
         return false
+
     }
 
     //Kuvan valitseminen puhelimesta
@@ -247,7 +250,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         //  Toast.makeText(this, kuvanNimi,Toast.LENGTH_LONG).show()//testi. Kuvan nimi on sama kuin markkerin key/tag
         val storageRef = FirebaseStorage.getInstance().reference
         val kuvanPaikka:ImageView=view.findViewById(R.id.kuvaImg)
-        storageRef.child("images/$kuvanNimi.jpg").downloadUrl.addOnSuccessListener {
+        storageRef.child("images/$kuvanNimi").downloadUrl.addOnSuccessListener {
             Glide.with(this ).load(it).into(kuvanPaikka)
         }.addOnFailureListener {
             // Handle any errors
