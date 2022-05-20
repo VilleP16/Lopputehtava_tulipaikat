@@ -1,29 +1,38 @@
 package com.example.lopputehtava_tulipaikat
+
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.bumptech.glide.Glide
 import com.example.lopputehtava_tulipaikat.databinding.ActivityMapsBinding
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.Marker
 import com.google.firebase.database.*
+import com.google.firebase.database.collection.LLRBNode
 import com.google.firebase.storage.FirebaseStorage
+
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -47,7 +56,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     //kuvan lisäykseen
     private lateinit var tallennaKuvaBtn:Button
     private var imageUri: Uri?=null
-  //Storagen voisi määritellä jo täällä, niin ei tule toistettua myöhemmin turhaa
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,11 +74,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+
         mMap = googleMap
         mMap.uiSettings.isZoomControlsEnabled=true
         mMap.setOnMarkerClickListener(this)
         setUpMap()
-        lisaaMarkkeritKartalle()
+        var i = R.drawable.tuli
+        var ikoni= i.toBitmap(this)
+        if (ikoni != null) {
+            lisaaMarkkeritKartalle(ikoni)
+        }
         Toast.makeText(applicationContext,"Voit lisätä uuden tulipaikan painamalla karttaa pitkään",Toast.LENGTH_LONG).show()
         
         mMap.setOnMapLongClickListener {
@@ -76,7 +92,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             lisaaUusiTulipaikka(klikinKoordinaatit)
         }
     }
+//Muutetaan ikoni bitmapiksi, jotta voidaan käyttää markkereina
+fun Int.toBitmap(context: Context): Bitmap? {
 
+    // retrieve the actual drawable
+    val drawable = ContextCompat.getDrawable(context, this) ?: return null
+    drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+    val bm = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+
+    // draw it onto the bitmap
+    val canvas = Canvas(bm)
+    drawable.draw(canvas)
+    return bm
+}
     @SuppressLint("InflateParams")
     private fun lisaaUusiTulipaikka(koordinaatit : LatLng) {
         val dialog = BottomSheetDialog(this)
@@ -108,6 +136,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     Puut=onkoPuita.isChecked
 
                     database.child(key).setValue(tulipaikka)
+                    println(key)
 
                 }
 
@@ -116,7 +145,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             //tallennetaan kuva storageen
             imageUri?.let { it1 -> uploadImg(it1, key) }
             dialog.dismiss()
-            Toast.makeText(this, "Tulipaikka lisätty",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Tulipaikka lisätty",Toast.LENGTH_LONG).show()
+
 
         }
         tallennaKuvaBtn.setOnClickListener{
@@ -126,7 +156,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private fun tekstiKentatTayttavatEhdot(nimi:String, kuvaus: String): Boolean {
             if(nimi.isNotEmpty() && nimi.length <= 20 && kuvaus.isNotEmpty() && kuvaus.length <= 100){
-               // Toast.makeText(this, "Tulipaikka lisätty",Toast.LENGTH_SHORT).show()
+
                 return true
             }
         Toast.makeText(this, "Virhe, tarkista vaadittavat kentät",Toast.LENGTH_SHORT).show()
@@ -146,18 +176,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         if(requestCode==100 && resultCode== RESULT_OK){
             imageUri= data?.data!!
 
-            //tallennaKuvaBtn.setImageURI(ImageUri)
+
         }
     }
     private fun uploadImg(imagUri: Uri, id:String) {
         if(imagUri!=null){
-            FirebaseStorage.getInstance().reference.child("images/$id")
+        var storage= FirebaseStorage.getInstance().reference.child("images/$id")
+        storage.putFile(imagUri)
 
         }
     }
 
-    private fun lisaaMarkkeritKartalle() {
-        //database = FirebaseDatabase.getInstance().getReference("Tulipaikat")
+    private fun lisaaMarkkeritKartalle(ikoni:Bitmap) {
+
         database.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
@@ -171,7 +202,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                             val m = mMap.addMarker(MarkerOptions()
                             .position(lokaatio)
-                            .title(paikannimi as String?))
+                            .title(paikannimi as String?).icon(ikoni?.let { BitmapDescriptorFactory.fromBitmap(it) })
+                               )
                         m?.tag = tagi
 
                     }
@@ -204,11 +236,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         }
     }
+    //Tämä kommentoitu pois jottei näytä markkeria nykyisessä sijainnissa. Näkyy vain sininen pallo
     private fun placeMarkerOnMap(currentLatLong: LatLng) {
-        val markerOptions= MarkerOptions().position(currentLatLong)
-        markerOptions.title("Olet tässä")
-       markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-        mMap.addMarker(markerOptions)
+       // val markerOptions= MarkerOptions().position(currentLatLong)
+     //   markerOptions.title("Olet tässä")
+      // markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+      //  mMap.addMarker(markerOptions)
     }
 
     @SuppressLint("InflateParams")
@@ -228,13 +261,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
                // val dialog = BottomSheetDialog(this)
                // val view=layoutInflater.inflate(R.layout.bottom_sheet_dialog,null)
-              val paikka: TextView = view.findViewById(R.id.nimiTxt)
+                val paikka: TextView = view.findViewById(R.id.nimiTxt)
                 val koordinaatit: TextView = view.findViewById(R.id.koordinaatitTxt)
                 val kuvausTeksti: TextView = view.findViewById(R.id.kuvausTxt)
                 val vessaCB: CheckBox = view.findViewById(R.id.vessaCb)
                 val puutCB: CheckBox = view.findViewById(R.id.puutCb)
 
                 paikka.text = paikkaNimi
+               // testi: paikka.text=marker.tag.toString()
                 kuvausTeksti.text = kuvaus
                 koordinaatit.text = "$lat , $lng"
                     vessaCB.isChecked = onkoVessaa
@@ -246,7 +280,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
 
         }
-        val kuvanNimi=marker.tag.toString()
+        val kuvanNimi=marker.tag
+        println("hakee kuvaa nimellä $kuvanNimi")
         //  Toast.makeText(this, kuvanNimi,Toast.LENGTH_LONG).show()//testi. Kuvan nimi on sama kuin markkerin key/tag
         val storageRef = FirebaseStorage.getInstance().reference
         val kuvanPaikka:ImageView=view.findViewById(R.id.kuvaImg)

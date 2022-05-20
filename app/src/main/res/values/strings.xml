@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Lopputehtava_tulipaikat</string>
-    <string name="title_activity_maps">MapsActivity</string>
+    <string name="title_activity_maps">Tulistelupaikat</string>
     <string name="text_label">Toastin teksti</string>
 </resources>
