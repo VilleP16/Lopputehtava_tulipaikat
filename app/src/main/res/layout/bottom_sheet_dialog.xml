@@ -48,6 +48,7 @@
 
     <ImageView
         android:id="@+id/kuvaImg"
+        android:src="@drawable/placeholder"
         android:layout_width="0dp"
         android:layout_height="203dp"
         android:layout_marginTop="16dp"
